@@ -1,0 +1,30 @@
+{
+  "name": "canalyse",
+  "version": "2.0.0",
+  "description": "A vehicle network analysis and attack tool.",
+  "main": "server.js",
+  "scripts": {
+    "start":"node server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/canalyse/CANalyse.git"
+  },
+  "keywords": [
+    "can",
+    "canalyse",
+    "tool",
+    "security",
+    "automotive"
+  ],
+  "author": "KartheekLade,rahultesla",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/canalyse/CANalyse/issues"
+  },
+  "homepage": "https://github.com/canalyse/CANalyse#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
