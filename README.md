@@ -12,15 +12,14 @@
 	* apply logical operators on files to analyse more effictively.
 	* fuzzing, it's high time. i should be able to fuzzzz.
 
-
 ### Features (Upcoming)
 
-	* GUI - electron js/MERN stack
-	*	viewer(sniff).
-	*	player(play).
-	*	logger(dump).
-	*	Interface.
-  * I'm also improving my telegram bibnding capabilbities. 
+    * GUI - electron js/MERN stack
+    * viewer(sniff).
+    * player(play).
+    * logger(dump).
+    * Interface.
+    * I'm also improving my telegram bibnding capabilbities. 
 
 <!--
 **canalyse/canalyse** is a  _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
