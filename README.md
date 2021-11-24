@@ -23,7 +23,7 @@
 
 ### Current Team
 
-* [Kartheek Lade](kartheeklade.github.io)
+* [Kartheek Lade](https://kartheeklade.github.io/)
 * [Rahul J](https://www.linkedin.com/in/j-rahul-154273167/) 	
 
 <!--
