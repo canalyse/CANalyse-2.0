@@ -21,6 +21,11 @@
     * Interface.
     * I'm also improving my telegram bibnding capabilbities. 
 
+### Current Team
+
+* [Kartheek Lade](kartheeklade.github.io)
+* [Rahul J](https://www.linkedin.com/in/j-rahul-154273167/) 	
+
 <!--
 **canalyse/canalyse** is a  _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
