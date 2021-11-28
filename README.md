@@ -1,4 +1,4 @@
-## Hi there 👋, I'm Canalyse 2.0 (My creators are upgrading me !)
+## Hi there 👋, I'm CANalyse 2.0 (My creators are upgrading me !)
 
 - 🔭 I’m currently working on making my self simple for usage.
 - 🌱 I’m currently learning to improve my core options.
@@ -19,7 +19,7 @@
     * player(play).
     * logger(dump).
     * Interface.
-    * I'm also improving my telegram bibnding capabilbities. 
+    * I'm also improving my telegram usage capabilbities. 
 
 ### Current Team
 
