@@ -6,7 +6,7 @@
 - 📫 How to reach me: canalyse@protomail.com
 - ⚡ Fun fact: I'm Brewing ✨
 
-### Technicals: - wasm
+### Technicals
 
 	* ability to club multiple files.
 	* apply logical operators on files to analyse more effictively.
