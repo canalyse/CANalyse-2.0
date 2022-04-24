@@ -1,0 +1,7 @@
+pandas
+pandasql
+python-can
+python-telegram-bot
+termcolor
+rich
+pyfiglet==0.7

@@ -1,0 +1,11 @@
+{
+    "Smart Scan": "smartscan",
+    "Canalyse IDE": "ide",
+    "Connect to Telegram": "telegram",
+    "Manual": "manual",
+    "Settings": {
+        "Communication channel": "vcan0",
+        "Communication Interface": "socketcan",
+        "API_Token": "3"
+    }
+}
