@@ -6,6 +6,10 @@
 - 📫 How to reach me: canalyse@protomail.com
 - ⚡ Fun fact: I'm Brewing ✨
 
+### Disclaimer :warning:  !
+CANalyse is a software tool that analyzes the vehicle internal networks, which is made available for research purposes only.
+The users of this tool are responsible for making sure that they are compliant with their local laws and that they have proper permission from the network owners.
+
 ### Technicals
 
 	* ability to club multiple files.
