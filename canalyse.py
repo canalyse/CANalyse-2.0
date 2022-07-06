@@ -41,15 +41,15 @@ class Canalyse:
             self.goterror = True
             self.errorreason = reason
 #58854
-    def scan(self, channel, timeline):
+    def scan(self, channel, timeline): #scan specified bus/channel and stores the data packets for a specified time.
         try:
             bus = can.Bus(
-                bustype=self.bustype, channel=channel)  # type: ignore
+                bustype=self.bustype, channel=channel)
             cls = ["timestamp", "channel", "id", "data"]
             if int(timeline) != 0:
                 t_end = time.time() + int(timeline)
             else:
-                t_end = time.time() + 600  # max time limit.
+                t_end = time.time() + 600  # max time limit is 10 Min.
 
             msgs = []
 
@@ -70,7 +70,7 @@ class Canalyse:
         except Exception as e:
             self.error(e)
 
-    def read(self,filename):
+    def read(self,filename): #reads specified file by using logreader function from can library.
         if filename.split(".")[-1] == "csv":
             return pd.read_csv(filename)
         cls = ["timestamp", "channel", "id", "data"]
@@ -89,7 +89,7 @@ class Canalyse:
                 row_list.append(dict((cls[a], mrow[a]) for a in range(4)))
         return pd.DataFrame(row_list,columns=cls)
 
-    def save(self, df, filename):
+    def save(self, df, filename): #saves the dataframes in the specified format.
         extension = filename.split(".")[-1]
 
         if extension == "csv":
@@ -121,7 +121,7 @@ class Canalyse:
             pass  # file format not supported
             self.error(f"{extension} not supported")
 
-    def exportvardata(self, filepath, projectname):
+    def exportvardata(self, filepath, projectname): #exports session data path to custom file format.
         projectpath = os.path.join(filepath, projectname)
         if os.path.isdir(projectpath):
             mode = "a+"
@@ -156,7 +156,7 @@ class Canalyse:
                         val = '"' + val + '"'
                     datafile.write(f"{var} = {val}\n")
 
-    def exportcodedata(self, filepath, projectname):
+    def exportcodedata(self, filepath, projectname): #exports session commands to custom file format.
         projectpath = os.path.join(filepath, projectname)
         if os.path.isdir(projectpath):
             mode = "a+"
@@ -169,13 +169,13 @@ class Canalyse:
             for code in self.history[:-1]:
                 codefile.write(f"{code}\n")
 
-    def export(self, projectpath):
+    def export(self, projectpath): #exports complete session data to projectpath.
         projectname = projectpath.split("/")[-1]
         filepath = "/".join(projectpath.split("/")[:-1])
         self.exportvardata(filepath, projectname)
         self.exportcodedata(filepath, projectname)
 
-    def importt(self, projectpath):
+    def importt(self, projectpath): #import complete session data from projectpath.
         projectname = projectpath.split("/")[-1]
         datafilepath = os.path.join(projectpath, projectname + ".data.clyse")
         if os.path.isfile(datafilepath):
@@ -186,7 +186,7 @@ class Canalyse:
         else:
             self.error("Invalid project path")
 
-    def run(self, projectpath):
+    def run(self, projectpath): # runs an entire session (*Testing In-Progress)
         projectname = projectpath.split("/")[-1]
         actionfilepath = os.path.join(projectpath, projectname + ".action.clyse")
         if os.path.isfile(actionfilepath):
@@ -194,7 +194,7 @@ class Canalyse:
                 for line in datafile.readlines():
                     self.repl(line)
 
-    def play(self, channel, df):
+    def play(self, channel, df): #plays specified pandas dataframe.
         try:
             bus = can.Bus(bustype=self.bustype, channel=channel)  # type: ignore
             self.save(df, "play_cache.log")
@@ -207,7 +207,7 @@ class Canalyse:
         except Exception as e:
             self.error(e)
 
-    def playmsg(self, channel, canmsg):
+    def playmsg(self, channel, canmsg): #option to play a particular packet.
         bus = can.Bus(bustype=self.bustype, channel=channel)  # type: ignore
         t = canmsg.split("#")
         hdata = t[1]
@@ -221,14 +221,14 @@ class Canalyse:
         )
         bus.send(m)
 
-    def sql(self, query):
+    def sql(self, query): #runs an sql query.
         try:
             df = ps.sqldf(query, self.variables)
             return df
         except Exception as e:
             self.error(e)
 
-    def download(self,filename):
+    def download(self,filename): #downloads files to bot operating device.
         try:
             if self.telegram:
                 self.bot.send_document(chat_id=self.chat_id, document=open(filename, "rb"))  # type: ignore
@@ -237,14 +237,14 @@ class Canalyse:
         except Exception as e:
             self.error(e)
 
-    def isfloat(self, string: str):
+    def isfloat(self, string: str): #checks inputs.
         try:
             a = float(string)
             return True
         except:
             return False
 
-    def check_func_args(self, func, args):
+    def check_func_args(self, func, args): #checks for arg requirements.
         if len(self.builtin[func]) != len(args):
             self.error(
                 f"function {func} requires {len(self.builtin[func])} arguments {len(args)} given"
@@ -252,7 +252,7 @@ class Canalyse:
             return False
         return True
 
-    def execute_func(self, func, args):
+    def execute_func(self, func, args): #executes functions.
         if func == "scan" and self.check_func_args(func, args):
             return self.scan(self.evaluate(args[0]), self.evaluate(args[1]))
         elif func == "read" and self.check_func_args(func, args):
@@ -296,7 +296,7 @@ class Canalyse:
         else:
             self.error("Variable not defined")
 
-    def do_split(self, code, element):
+    def do_split(self, code, element): #splits the specified command.
         dqsk = 0
         qk = 0
         ck = 0
@@ -320,7 +320,7 @@ class Canalyse:
         result.append(code[start:])
         return result
 
-    def evaluate(self, code):
+    def evaluate(self, code): #evaluates the split output.
         code = code.strip()
         tokens = self.do_split(code, "(")
         if len(tokens) == 0:
@@ -335,7 +335,7 @@ class Canalyse:
             args = self.do_split(code, ",")
             return self.execute_func(func, args)
 
-    def repl(self, code):
+    def repl(self, code): #extracts passed command for executing it through different functions.
         code = code.strip()
         if code == "":
             return None
