@@ -28,7 +28,8 @@ The users of this tool are responsible for making sure that they are compliant w
 ### Current Team
 
 * [Kartheek Lade](https://kartheeklade.github.io/)
-* [Rahul J](https://www.linkedin.com/in/j-rahul-154273167/) 	
+* [Rahul J](https://www.linkedin.com/in/j-rahul-154273167/)
+* [Chandu Kona](https://mobile.twitter.com/chandu_kona/with_replies)
 
 <!--
 **canalyse/canalyse** is a  _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
