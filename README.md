@@ -7,8 +7,7 @@
 - ⚡ Fun fact: I'm Brewing ✨
 
 ### Disclaimer :warning:  !
-CANalyse is a software tool that analyzes the vehicle internal networks, which is made available for research purposes only.
-The users of this tool are responsible for making sure that they are compliant with their local laws and that they have proper permission from the network owners.
+CANalyse is a software tool that analyzes the vehicle's internal networks, which is made available for research purposes only. The users of this tool are solely responsible for making sure that they are doing their due diligence and not violating any laws and that they have proper permission from the stakeholders.
 
 ### Technicals
 
@@ -16,44 +15,9 @@ The users of this tool are responsible for making sure that they are compliant w
 	* apply logical operators on files to analyse more effictively.
 	* fuzzing, it's high time. i should be able to fuzzzz.
 
-### Features (Upcoming)
-
-    * GUI - electron js/MERN stack
-    * viewer(sniff).
-    * player(play).
-    * logger(dump).
-    * Interface.
-    * I'm also improving my telegram usage capabilbities. 
-
 ### Current Team
 
 * [Kartheek Lade](https://kartheeklade.github.io/)
 * [Rahul J](https://www.linkedin.com/in/j-rahul-154273167/)
 
-<!--
-**canalyse/canalyse** is a  _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started:
-
-
-- 💬 Ask me about ...
-- 
-- 😄 Pronouns: ...
-- ...
-
-	better Telegram Integration
-		better telegram messages
-		pairing option
-
-	raspberry pi - portable localhost:8000 
-		should run at start
-		should be able to connect with hardware interfaces(socketcan)
-	wasm backend for fast data processing
-		technicals should be implemented in this
-		should be able to pass data to frontend like an API
-	git integration for saving projects
-		user should have option to create,load project files
-		should be reliable at sudden power failures of hardware
-
-
--->
+### checkout the wiki for more information !
