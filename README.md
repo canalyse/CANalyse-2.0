@@ -13,7 +13,7 @@ CANalyse is a software tool that analyzes the vehicle's internal networks, which
 
 	* ability to club multiple files.
 	* apply logical operators on files to analyse more effictively.
-	* fuzzing, it's high time. i should be able to fuzzzz.
+	* fuzzing, it's high time. i should be able to fuzzzz. (Work in progress)
 
 ### Current Team
 
