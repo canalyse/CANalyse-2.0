@@ -3,7 +3,7 @@
 - 🔭 I’m currently working on making my self simple for usage.
 - 🌱 I’m currently learning to improve my core options.
 - 👯 I’m looking to collaborate with developers for adding new features.
-- 📫 How to reach me: canalyse@protomail.com
+- 📫 How to reach me: canalyse@protonmail.com
 - ⚡ Fun fact: I'm Brewing ✨
 
 ### Disclaimer :warning:  !
@@ -29,7 +29,6 @@ The users of this tool are responsible for making sure that they are compliant w
 
 * [Kartheek Lade](https://kartheeklade.github.io/)
 * [Rahul J](https://www.linkedin.com/in/j-rahul-154273167/)
-* [Chandu Kona](https://mobile.twitter.com/chandu_kona/with_replies)
 
 <!--
 **canalyse/canalyse** is a  _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
@@ -58,5 +57,3 @@ Here are some ideas to get you started:
 
 
 -->
-
-
