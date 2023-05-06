@@ -208,6 +208,7 @@ class Interface:
     def get_new_message(self,bot, update_id=None):
         while True:
             msg = bot.get_updates()[-1]
+            time.sleep(1)
             try:
                 if msg.update_id != update_id:
                     return msg
