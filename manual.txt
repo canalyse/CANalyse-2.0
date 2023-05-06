@@ -4,11 +4,7 @@
 A prerequisite to using this tool is that the Hardware implant is already installed in the car and capable of communicating with the CAN bus protocol inside the vehicle.
 
 
-Let’s assume we have a car in which we have connected with USBtin(or attacker choice), and USBtin(or attacker choice) is connected to Raspberry pi (with GSM module) and the pi can communicate on the internet.
-
-
-LInk to USBtin - https://www.fischl.de/usbtin/
-Link to GSM module - https://www.electronicscomp.com/sim900a-gsm-gprs-module-india
+Let’s assume we have a car in which we have connected with USBtin(or attacker choice), and USBtin(or attacker choice) is connected to Raspberry pi and the pi can communicate on the internet.
 
 
 Canalyse uses python-can library to sniff car information and analyze the gathered information and uses the analyzed information to command & control certain functions of the car.
@@ -48,99 +44,3 @@ the analyze function in the tool can identify the data packets which are unique 
 
 
 In short, using CANalyse the attacker can sniff the CAN network, analyze, and replay the payload using the telegram bot.
-
-
-Technical details:
-
-
-I have used the python-can library in this tool at the base and developed a function using that since it supports various communication interfaces and makes the tool flexible to be used with different hardware. for filtering and analyzing I have used the panda’s library, it is used to convert the data to data frames and analyzing them in a faster way. The python-telegram-bot is used to access and communicate with a telegram bot.
-
-
-For more information, please refer CANalyse GitHub repository:  (https://github.com/KartheekLade/CANalyse)
-
-Functionalities:
-    Smart Scan:
-        1.once smart scan is started press 'space' and give the signals which you want to find
-        2.once you have given the signals , press 'b' in smartscan and observe the list 
-        3.give space again and give your signals and press 'b' once you stopped giving it
-        4.you can do step 3 iteratively till you find minimum static packets 
-        5.press 'p' to play the packets and check if smartscan found the correct signal ,
-        6.press 's' to save the signal to a log file.
-    IDE:
-        Data Types:
-            String:(same as python string datatype)
-                example: a = "hello world"
-            integer:(same as python integer datatype)
-                example: b = 1
-            float:(same as python float datatype)
-                example: c = 2.5
-            DataFrame:(same as python pandas dataframe datatype)
-                example: d = read('filename.csv')
-            Seq_DataFrame:(same as above datatype but contains only [timestamp,channel,id,data] columns)
-                example: e = scan('can0',3)
-
-        Functions:
-            scan(channel,time)
-                description: Listens to the CAN for given time and stores the data in a variable.
-                args:
-                    channel:String(should be valid channel name , check ifconfig)
-                    time:integer or float
-                return:Seq_DataFrame
-
-                usage:v = scan('can0')
-
-            read(filename)
-                description: reads canlogs and csv files and stores the data in a variable.
-                args:
-                    filename:String(supported extention log and csv)
-                return:
-                    if log file:
-                        Seq_DataFrame
-                    else:
-                        Seq_DataFrame or DataFrame
-                
-                usage:c = read('source.log')
-
-            save(dataframe,filename)
-                description: saves the data in the variable to log or csv file.
-                args:
-                    dataframe:Seq_DataFrame or DataFrame
-                    filename:String(save to this filename ,supported extensions log and csv)
-                usage:save(v,'test.log')
-
-            play(channel,dataframe)
-                description: sends the data in variable to CAN
-                args:
-                    channel:String(should be valid channel name , check ifconfig)
-                    dataframe:Seq_DataFrame
-                usage:play('can1',d)
-
-            sql(query)
-                description: runs SQL query on data and stores it in a variable.
-                args:
-                    query:String(should be a valid SQL query)
-                return:DataFrame
-
-                usage:e = sql("select id,data from s where id = '123' group by id")
-            playmsg(channel,message)
-                description: sends a single signal to CAN
-                args:
-                    channel:String(should be valid channel name , check ifconfig)
-                    message:String(use this format "<id>#<data>" where id and data are in hexadecimal format)
-                usage:playmsg('vcan0',"2A:54FFFF")
-
-            export(projectpath)
-                description: saves all the variables,data and code as project
-                args:
-                    projectpath:String(path of the project from current tool's path)
-                usage:export('path/tata_car')
-            import(projectpath)
-                description: imports the project's variable and values to current session(runs the <projectname>.data.cylse file)
-                args:
-                    projectpath:String('should be a valid path from current tools path where project exists)
-                usage:export("path/maruti")
-            run(projectpath)
-                description: run all the code which was in the project(runs the <projectname>.action.cylse file)
-                args:
-                    projectpath:String('should be a valid path from current tools path where project exists)
-                usage:run("path/maruti")
