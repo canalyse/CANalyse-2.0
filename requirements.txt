@@ -1,7 +1,7 @@
 pandas
 pandasql
 python-can
-python-telegram-bot
+python-telegram-bot==13.12
 termcolor
 rich
 pyfiglet==0.7
