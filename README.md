@@ -80,11 +80,4 @@ All tests should pass before using the tool in production environments.
 
 Contributions welcome! Please ensure tests pass and follow the existing code style.
 
-## Team
 
-- [Kartheek Lade](https://kartheeklade.github.io/)
-- [Rahul J](https://www.linkedin.com/in/j-rahul-154273167/)
-
-## License
-
-See LICENSE file.
