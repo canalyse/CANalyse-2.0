@@ -4,18 +4,21 @@ from canalyse import Canalyse
 import pyfiglet as pf
 import json
 import time
-from telegram import Bot
+import asyncio
+from telegram.ext import Application
+from telegram.ext import MessageHandler, filters
+from typing import Dict, List, Any
 
 
 class Interface:
     def __init__(self, filename: str = "nav.json") -> None:
-        self.filename = filename
+        self.filename: str = filename
         with open(self.filename) as file:
-            self.menu = json.load(file)
-        self.path: list[str] = []
-        self.console = Console()
-        self.channel = self.menu["Settings"]["Communication channel"]
-        self.bustype = self.menu["Settings"]["Communication Interface"]
+            self.menu: Dict[str, Any] = json.load(file)
+        self.path: List[str] = []
+        self.console: Console = Console()
+        self.channel: str = self.menu["Settings"]["Communication channel"]
+        self.bustype: str = self.menu["Settings"]["Communication Interface"]
 
     def header(self) -> None:
         print("")
@@ -52,7 +55,8 @@ class Interface:
 
     def display(self) -> None:
         while True:
-            print("\033c", end="")
+            # Clear screen in a cross-platform way
+            print("\n" * 50)  # Simple screen clearing
             self.header()
             self.page()
             self.footer()
@@ -69,9 +73,14 @@ class Interface:
                 else:
                     self.path.append(option)
             except KeyboardInterrupt:
+                print("\nExiting...")
                 break
-            except Exception:
-                continue
+            except ValueError:
+                print("Invalid option. Please enter a number.")
+                time.sleep(1)
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                time.sleep(1)
 
     def execute(self, option: str) -> None:
         func = self.goto(self.path + [option])
@@ -80,10 +89,12 @@ class Interface:
         elif func == "telegram": 
             try:
                 self.telegram()
-            except:
-                pass
+            except Exception as e:
+                print(f"Telegram error: {e}")
         elif func == "smartscan":
             self.smartscan()
+        elif func == "fuzzer":
+            self.fuzzer()
         elif func == "manual":
             self.manual()
 
@@ -92,132 +103,157 @@ class Interface:
                 self.change_settings(option,func)
     
     def change_settings(self,option,func):
-        print("\033c", end="")
-        #print("\033c", end="")
+        print("\n" * 50)  # Clear screen
         self.header()
         print(f"{option} is set to : {func}")
         value = input(f"Change {option} to (default): ")
-        if value != func and value != None and value != "":
+        if value and value != func:
             self.menu["Settings"][option] = value
             self.channel = self.menu["Settings"]["Communication channel"]
             self.bustype = self.menu["Settings"]["Communication Interface"]
-            j = json.dumps(self.menu,indent=4)
-            with open(self.filename, "w+") as file:
-                file.write(j)
+            try:
+                with open(self.filename, "w") as file:
+                    json.dump(self.menu, file, indent=4)
+                print("Settings updated successfully.")
+            except Exception as e:
+                print(f"Error saving settings: {e}")
+        time.sleep(1)
 
     def manual(self):
         try:
-            print("\033c", end="")
-            #print("\033c", end="")
+            print("\n" * 50)  # Clear screen
             self.header()
-            with open("manual.txt",'r+') as file:
-                input(file.read())
-        except:
-            pass
+            with open("manual.txt",'r') as file:
+                print(file.read())
+            input("Press Enter to continue...")
+        except FileNotFoundError:
+            print("Manual file not found.")
+        except Exception as e:
+            print(f"Error reading manual: {e}")
+        time.sleep(1)
         
     def ide(self):
-        print("\033c", end="")
+        print("\n" * 50)  # Clear screen
         self.header()
         with Canalyse(self.channel, self.bustype) as cn:
             history = []
             while True:
-                code = input("###--> ")
-                code = code.lower().strip()
-                if code in ["close", "quit", "exit"]:
-                    break
-                else:
-                    try:
-                        output = cn.repl(code)
-                        if output is not None:
-                            print(output)
-                        history.append(code)
-                    except KeyboardInterrupt:
+                try:
+                    code = input("###--> ")
+                    code = code.lower().strip()
+                    if code in ["close", "quit", "exit"]:
                         break
-                    except Exception as e:
-                        print(e)
+                    else:
+                        try:
+                            output = cn.repl(code)
+                            if output is not None:
+                                print(output)
+                            history.append(code)
+                        except Exception as e:
+                            print(f"Error: {e}")
+                except KeyboardInterrupt:
+                    print("\nExiting IDE...")
+                    break
+                except EOFError:
+                    break
 
     def smartscan(self):
-        print("\033c", end="")
+        print("\n" * 50)  # Clear screen
         with Canalyse(self.channel, self.bustype) as cn:
-            cn.smartscan()
-        pass
+            try:
+                cn.smartscan()
+            except Exception as e:
+                print(f"Smart scan error: {e}")
+        input("Press Enter to continue...")
+
+    def fuzzer(self):
+        print("\n" * 50)  # Clear screen
+        self.header()
+        with Canalyse(self.channel, self.bustype) as cn:
+            while True:
+                try:
+                    code = input("Fuzzer> ")
+                    if code.lower() in ["exit", "quit"]:
+                        break
+                    result = cn.repl(code)
+                    if result is not None:
+                        print(result)
+                except KeyboardInterrupt:
+                    break
+                except Exception as e:
+                    print(f"Error: {e}")
 
     def telegram(self):
-        print("\033c", end="")
+        print("\n" * 50)  # Clear screen
         self.header()
         apit = self.menu["Settings"]["API_Token"]
-        try:
-            bot = Bot(token=apit)
-        except:
-            if apit == "":
-                print("Set API Token in settings")
-            else:
-                print("Invalid API Token")
-            time.sleep(1)
-            return None
+        if not apit or apit.strip() == "":
+            print("Set API Token in settings first")
+            time.sleep(2)
+            return
 
-        with Canalyse(self.channel, self.bustype) as cn:
+        async def run_telegram():
+            try:
+                application = Application.builder().token(apit).build()
+            except Exception as e:
+                print(f"Invalid API Token: {e}")
+                return
+
+            cn = Canalyse(self.channel, self.bustype)
             cn.telegram = True
             history = []
-            msg = self.get_new_message(bot)
-            update_id = msg.update_id
-            chat_id = msg.message.chat_id
-            cn.bot = bot  # type: ignore
-            while True:
-                print("hi")
-                msg = self.get_new_message(bot, update_id)
-                update_id = msg.update_id
-                code = msg.message.text
-                chat_id = msg.message.chat_id
+
+            async def handle_message(update, context):
+                code = update.message.text.lower().strip()
+                chat_id = update.message.chat_id
                 cn.chat_id = chat_id
-                
-                code = code.lower().strip()  # type: ignore
+                cn.bot = context.bot
+
                 if code in ["close", "quit", "exit"]:
-                    bot.send_message(
-                        chat_id=chat_id, text="👋"
-                    )
-                    break
-                else:
-                    print("Message recieved : "+code)
-                    try:
-                        output = cn.repl(code)
-                        if output is not None:
-                            print("Output : "+str(output))
-                            bot.send_message(
-                                chat_id=chat_id, text=str(output)
-                            )
-                        elif cn.goterror:
-                            print("Output : "+"👎 ERROR")
-                            bot.send_message(
-                                chat_id=chat_id, text="👎 ERROR: "+str(cn.errorreason)
-                            )
-                        else:
-                            print("Output : "+"👍")
-                            bot.send_message(
-                                chat_id=chat_id, text="👍"
-                            )
+                    await context.bot.send_message(chat_id=chat_id, text="👋 Goodbye!")
+                    await application.stop()
+                    return
 
-                        history.append(code)
-                    except KeyboardInterrupt:
-                        break
-                    except Exception as e:
-                        bot.send_message(
-                            chat_id=chat_id, text="👎 ERROR : "+str(e)
-                        )
+                print(f"Message received: {code}")
+                try:
+                    output = await asyncio.to_thread(cn.repl, code)
+                    if cn.pending_download:
+                        try:
+                            await context.bot.send_document(chat_id=chat_id, document=open(cn.pending_download, "rb"))
+                        except Exception as e:
+                            await context.bot.send_message(chat_id=chat_id, text=f"❌ Error sending file: {e}")
+                        finally:
+                            cn.pending_download = None
+                    if output is not None:
+                        await context.bot.send_message(chat_id=chat_id, text=str(output))
+                    elif cn.goterror:
+                        await context.bot.send_message(chat_id=chat_id, text=f"❌ Error: {cn.errorreason}")
+                    else:
+                        await context.bot.send_message(chat_id=chat_id, text="✅ Done")
+                    history.append(code)
+                except Exception as e:
+                    await context.bot.send_message(chat_id=chat_id, text=f"❌ Error: {str(e)}")
 
-    def get_new_message(self,bot, update_id=None):
-        while True:
-            msg = bot.get_updates()[-1]
-            time.sleep(1)
+            application.add_handler(MessageHandler(filters.TEXT, handle_message))
+
             try:
-                if msg.update_id != update_id:
-                    return msg
-            except KeyboardInterrupt:
-                bot.send_message(
-                    chat_id=msg.chat_id, text="Closed in terminal,bye.."
-                )
+                await application.run_polling()
+            except Exception as e:
+                print(f"Telegram polling error: {e}")
+
+        try:
+            asyncio.run(run_telegram())
+        except KeyboardInterrupt:
+            print("Telegram bot stopped")
+
+
+def main():
+    """Main entry point for CANalyse."""
+    interface = Interface()
+    interface.display()
 
 
 if __name__ == "__main__":
-    interface = Interface()
-    interface.display()
+    main()
+
+

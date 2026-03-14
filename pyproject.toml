@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "canalyse"
+version = "2.0.0"
+description = "CAN bus analysis tool for vehicle networks"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+authors = [
+    {name = "Kartheek Lade", email = "canalyse@protonmail.com"},
+    {name = "Rahul J"},
+]
+maintainers = [
+    {name = "Kartheek Lade", email = "canalyse@protonmail.com"},
+]
+keywords = ["can", "can-bus", "automotive", "security", "analysis", "fuzzer"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: System :: Networking",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "pandas",
+    "pandasql",
+    "python-can",
+    "python-telegram-bot",
+    "termcolor",
+    "rich",
+    "pyfiglet",
+    "keyboard",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "flake8",
+    "mypy",
+]
+test = [
+    "pytest",
+]
+
+[project.urls]
+Homepage = "https://github.com/canalyse/CANalyse-2.0"
+Repository = "https://github.com/canalyse/CANalyse-2.0"
+Issues = "https://github.com/canalyse/CANalyse-2.0/issues"
+Documentation = "https://github.com/canalyse/CANalyse-2.0/wiki"
+
+[project.scripts]
+canalyse = "canalyse_interface:main"
+
+[tool.setuptools]
+packages = ["."]
+
+[tool.setuptools.package-data]
+canalyse = ["nav.json", "manual.txt"]

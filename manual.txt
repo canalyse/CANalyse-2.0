@@ -1,46 +1,227 @@
-﻿CANalyse
+﻿# CANalyse User Manual
 
+## Overview
 
-A prerequisite to using this tool is that the Hardware implant is already installed in the car and capable of communicating with the CAN bus protocol inside the vehicle.
+CANalyse is a comprehensive CAN bus analysis and testing tool designed for automotive security research. It provides capabilities for sniffing, analyzing, fuzzing, and replaying CAN bus traffic to identify and test vehicle control systems.
 
+## Prerequisites
 
-Let’s assume we have a car in which we have connected with USBtin(or attacker choice), and USBtin(or attacker choice) is connected to Raspberry pi and the pi can communicate on the internet.
+- **Hardware**: CAN bus interface (USBtin, CANalyst-II, PCAN, etc.) connected to the target vehicle's CAN network
+- **Software**: Python 3.8+ with required dependencies
+- **Permissions**: Appropriate access to CAN interfaces on your system
 
+## Installation
 
-Canalyse uses python-can library to sniff car information and analyze the gathered information and uses the analyzed information to command & control certain functions of the car.
+### Option 1: Install from PyPI (Recommended)
+```bash
+pip install canalyse
+```
 
+### Option 2: Install from Source
+```bash
+git clone https://github.com/canalyse/CANalyse-2.0.git
+cd CANalyse-2.0
+pip install -e .
+```
 
-What is CANalyse?
+## Quick Start
 
+1. **Launch the application**:
+   ```bash
+   canalyse
+   ```
 
-Once the above setup is ready, the USBtin(or attacker choice) can log the data packets in the vehicle’s network bus.
-CANalyse is a software tool built to analyze the log files to find out unique data sets automatically and able to connect to simple attacker interfaces such as Telegram. Basically, while using this tool you can provide your bot-ID and be able to use the tool over the internet through telegram. It is made to be installed inside a raspberry-PI and able to exploit the vehicle through a telegram bot by recording and analyzing the data logs, it is like a hardware implant planted inside a car which acts as a bridge between the Telegram bot and the Vehicle’s network.
+2. **Configure settings**:
+   - Set your CAN interface (e.g., `can0`, `vcan0`)
+   - Choose bus type (e.g., `socketcan`, `pcan`)
+   - Configure Telegram bot token if using remote access
 
+3. **Basic workflow**:
+   - Scan CAN traffic
+   - Analyze captured data
+   - Test with fuzzing
+   - Replay identified messages
 
+## Core Features
 
-How can CANalyse help in attacking vehicles?
+### 1. CAN Bus Scanning
+Capture and log CAN bus traffic for analysis.
 
+**Usage**:
+```
+scan("can0", "30")
+```
+- Parameters: `channel` (string), `duration` (seconds)
+- Captures all messages on the specified channel for the given time
+- Returns a DataFrame with timestamp, channel, ID, and data
 
-At any given point in time, there are thousands of requests going on in the can network. CANalyse will capture the traffic and extract the unique actions and corresponding dataset. Now, this dataset can be used to control car from the telegram bot.
+### 2. Data Analysis & Querying
+Analyze captured CAN data using SQL-like queries.
 
-In cars, the communication happens on protocols like CANbus and its variants. the physical activities such as Brakes, Signals, steering, etc are being handled by the Electronic Control Unit (Ecu’s) which take actions, according to a can data packet’s they receive.
+**Usage**:
+```
+read("capture.log")
+sql("SELECT * FROM df WHERE id = '123'")
+```
 
+### 3. Message Replay
+Replay captured or crafted CAN messages.
 
-Each data packet contains an ID and Data field. Ecu’s are preprogrammed to act according to data it receives. It resolves to if we have the correct ID and Correct data to impose a specific physical activity, the purpose of CANalyse to identify those specific data packets (ID & Data).
+**Usage**:
+```
+play("can0", dataframe)
+playmsg("can0", "123#DEADBEEF")
+```
 
+### 4. Intelligent Fuzzing
+Generate fuzzed CAN messages for security testing.
 
-This data is stored in the Raspberry PI and we can inject that data packet and control the vehicle from the telegram bot.
+**Usage**:
+```
+fuzz(dataframe, 100)
+```
+- Creates 100 variations of messages with random data modifications
+- Useful for identifying vulnerable ECUs and testing error handling
 
+### 5. Smart Scan
+Automatically identify signal vs noise in CAN traffic.
 
-This basically happens because of the mutual trust between the Ecu’s.
-While the attacker is using CANalyse he/she needs to 
-1. record a source log file that contains data other than the intended action (example: brakes are not applied) 
-2. record an attack log file (in which the brakes are applied).
-3. “Analyse source attack” which refines the payload file.
-4. Play the payload file.
+**Usage**:
+- Select "Smart Scan" from the main menu
+- Follow on-screen instructions to capture baseline and signal data
+- Tool automatically differentiates between noise and intentional signals
 
+### 6. Remote Access via Telegram
+Control CANalyse remotely through Telegram bot.
 
-the analyze function in the tool can identify the data packets which are unique in the attack file by comparing them with the source file, which means it can narrow down the specific packets. CANbus is a very robust protocol and sometimes it updates the data in milliseconds. 
+**Setup**:
+1. Create a Telegram bot via @BotFather
+2. Set the bot token in CANalyse settings
+3. Use Telegram commands to control the tool remotely
 
+**Available Commands**:
+- `scan("can0", "10")` - Scan for 10 seconds
+- `read("file.log")` - Load log file
+- `fuzz(df, 50)` - Generate 50 fuzzed messages
+- `play("can0", df)` - Replay messages
 
-In short, using CANalyse the attacker can sniff the CAN network, analyze, and replay the payload using the telegram bot.
+## Advanced Usage
+
+### Session Management
+```
+export("mysession")  # Save current session
+import("mysession")  # Load saved session
+run("mysession")     # Execute saved commands
+```
+
+### Data Export/Import
+```
+save(dataframe, "output.csv")   # Save to CSV format
+save(dataframe, "output.log")   # Save to CAN log format
+save(dataframe, "output.asc")   # Save to Vector ASC format
+save(dataframe, "output.blf")   # Save to Binary Log Format
+save(dataframe, "output.trc")   # Save to Peak TRC format
+save(dataframe, "output.mf4")   # Save to ASAM MF4 format
+save(dataframe, "output.db")    # Save to SQLite database
+
+read("input.asc")               # Read from ASC file
+read("input.blf")               # Read from BLF file
+read("input.trc")               # Read from TRC file
+read("input.mf4")               # Read from MF4 file
+read("input.db")                # Read from SQLite database
+```
+
+## Security Considerations
+
+- **Research Only**: This tool is intended for authorized security research only
+- **Legal Compliance**: Ensure you have proper authorization before testing on vehicles
+- **Input Validation**: The tool includes comprehensive input validation to prevent malicious use
+- **Network Security**: When using Telegram remote access, secure your bot token
+
+## CAN Bus Fundamentals
+
+### How CAN Works
+- **Messages**: Each CAN message contains an ID (identifier) and data payload
+- **ECUs**: Electronic Control Units respond to specific message IDs
+- **Broadcast**: All ECUs receive all messages but only respond to relevant IDs
+
+### Attack Methodology
+1. **Reconnaissance**: Scan network to identify active ECUs and message patterns
+2. **Analysis**: Compare normal vs triggered states to identify control messages
+3. **Testing**: Use fuzzing to test ECU robustness and identify vulnerabilities
+4. **Exploitation**: Replay identified control messages
+
+### Common Attack Vectors
+- **Message Injection**: Sending crafted messages to control vehicle functions
+- **DoS Attacks**: Flooding the bus with high-priority messages
+- **Parameter Manipulation**: Modifying data fields in legitimate messages
+- **Fuzzing**: Testing ECUs with unexpected or malformed data
+
+## Troubleshooting
+
+### Common Issues
+
+**"Invalid channel" Error**
+- Verify your CAN interface is properly configured
+- Check interface permissions (may need sudo on Linux)
+- Ensure the interface exists (`ip link show` on Linux)
+
+**Telegram Connection Issues**
+- Verify bot token is correct
+- Check internet connectivity
+- Ensure bot has proper permissions
+
+**Import Errors**
+- Install missing dependencies: `pip install -r requirements.txt`
+- Verify Python version (3.8+ required)
+- Check for conflicting package versions
+
+### Performance Tips
+- Use appropriate scan durations (start with short scans)
+- Filter data early to reduce memory usage
+- Save large datasets to disk rather than keeping in memory
+
+## Technical Details
+
+### Supported CAN Interfaces
+- SocketCAN (Linux)
+- PCAN (Windows/Linux)
+- CANalyst-II
+- USBtin
+- IXXAT
+- Virtual CAN (for testing)
+
+### Data Formats
+- **CSV**: Standard spreadsheet format
+- **LOG**: Native CAN log format compatible with other tools
+- **ASC**: Vector CAN log format (industry standard)
+- **BLF**: Binary Log Format (Vector tools)
+- **TRC**: Peak CAN trace format
+- **MF4**: Measurement Data Format (ASAM standard)
+- **SQLite**: Database format for large datasets
+- **DataFrames**: In-memory pandas DataFrames for analysis
+
+### File Structure
+```
+project/
+├── logs/          # CAN log files
+├── tables/        # CSV data files
+└── project.data.clyse    # Session variables
+    project.action.clyse  # Session commands
+```
+
+## Contributing
+
+We welcome contributions! Please:
+1. Test your changes thoroughly
+2. Follow the existing code style
+3. Add appropriate documentation
+4. Submit pull requests with clear descriptions
+
+## License
+
+This project is licensed under the MIT License. See LICENSE file for details.
+
+## Disclaimer
+
+CANalyse is a research tool for educational and security testing purposes. Users are responsible for complying with all applicable laws and regulations. The authors assume no liability for misuse of this software.

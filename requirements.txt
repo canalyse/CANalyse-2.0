@@ -1,7 +1,12 @@
+# Core dependencies
 pandas
 pandasql
 python-can
-python-telegram-bot==13.12
+python-telegram-bot
 termcolor
 rich
-pyfiglet==0.7
+pyfiglet
+keyboard
+
+# Development and testing
+pytest
